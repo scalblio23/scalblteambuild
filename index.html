@@ -306,6 +306,24 @@
     loadCalendly(name, email, phone);
   }
 
+  // Calendly's phone-number question renders as a country-code picker
+  // (defaults to +61 for this audience) plus a national-number field —
+  // the picker already supplies the +61, so the prefill must be just
+  // the national number with no leading 0 and no country code, e.g.
+  // "0403 214 320" -> "403214320". Otherwise Calendly ends up trying to
+  // dial +610403214320.
+  function toAuNationalNumber(raw){
+    var digits = raw.replace(/[^\d+]/g, '');
+    if(digits.indexOf('+61') === 0){
+      digits = digits.slice(3);
+    } else if(digits.indexOf('61') === 0 && digits.length > 9){
+      digits = digits.slice(2);
+    } else {
+      digits = digits.replace(/^\+/, '');
+    }
+    return digits.replace(/^0+/, '');
+  }
+
   // Push the collected details into Calendly so the invitee never
   // has to retype them. On this event (S.IO - Client Acquisition Team
   // Build), the "Phone Number" custom question is in slot 2 (a2) —
@@ -323,7 +341,7 @@
           prefill: {
             name: name,
             email: email,
-            customAnswers: { a2: phone }
+            customAnswers: { a2: toAuNationalNumber(phone) }
           }
         });
       } else if(attemptsLeft > 0){
