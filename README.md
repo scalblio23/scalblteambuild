@@ -33,14 +33,13 @@ question order on this event ever changes in Calendly**, update that key
 in `index.html` to match the new position (`a1`, `a3`, etc.) — otherwise
 the phone number will silently land in the wrong field.
 
-Calendly's phone question renders as a country picker (defaults to
-**+61**) plus a national-number field, so the prefill has to be the bare
-national number — no leading `0`, no country code — or it ends up trying
-to combine `+61` with a number that already starts with `0`/`61`.
-`toAuNationalNumber()` in `index.html` strips those before sending, e.g.
-`0403 214 320` → `403214320`. This assumes Australian numbers; if this
-event ever needs to support other countries, that function (and the
-picker's default country) will need to change.
+Calendly's phone question has a country picker, but prefilling it with
+just the bare national number doesn't reliably default that picker to
++61 — in testing it landed on Belgium. The prefill instead needs the
+country code baked into the digits, no `+`, e.g. `0403 214 320` →
+`61403214320`. `toAuPhoneDigits()` in `index.html` handles that. This
+assumes Australian numbers; if this event ever needs to support other
+countries, that function will need to change.
 
 ### thank-you.html
 

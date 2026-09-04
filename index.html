@@ -306,22 +306,17 @@
     loadCalendly(name, email, phone);
   }
 
-  // Calendly's phone-number question renders as a country-code picker
-  // (defaults to +61 for this audience) plus a national-number field —
-  // the picker already supplies the +61, so the prefill must be just
-  // the national number with no leading 0 and no country code, e.g.
-  // "0403 214 320" -> "403214320". Otherwise Calendly ends up trying to
-  // dial +610403214320.
-  function toAuNationalNumber(raw){
-    var digits = raw.replace(/[^\d+]/g, '');
-    if(digits.indexOf('+61') === 0){
-      digits = digits.slice(3);
-    } else if(digits.indexOf('61') === 0 && digits.length > 9){
-      digits = digits.slice(2);
-    } else {
-      digits = digits.replace(/^\+/, '');
-    }
-    return digits.replace(/^0+/, '');
+  // Calendly's phone-number question doesn't reliably default its
+  // country picker to +61 from a bare national number (it's landed on
+  // Belgium in testing) — the prefill needs the country code baked in
+  // as leading digits, no "+", e.g. "0403 214 320" -> "61403214320".
+  // A real AU national number never starts with "61" once its leading
+  // 0 is stripped (mobiles start 4, landlines 2/3/7/8), so detecting
+  // "already has the country code" this way is safe.
+  function toAuPhoneDigits(raw){
+    var digits = raw.replace(/\D/g, '');
+    if(digits.indexOf('61') === 0 && digits.length > 9) return digits;
+    return '61' + digits.replace(/^0+/, '');
   }
 
   // Push the collected details into Calendly so the invitee never
@@ -341,7 +336,7 @@
           prefill: {
             name: name,
             email: email,
-            customAnswers: { a2: toAuNationalNumber(phone) }
+            customAnswers: { a2: toAuPhoneDigits(phone) }
           }
         });
       } else if(attemptsLeft > 0){
