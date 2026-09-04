@@ -35,12 +35,29 @@ the phone number will silently land in the wrong field.
 
 ### thank-you.html
 
-Shown after a visitor books a call. If linked to from Calendly with
-"Add params to confirmation page redirect" enabled, it reads
-`event_start_time` / `event_end_time` from the URL to show the booked
-time and generate working "Add to Calendar" (Google + .ics) links.
-Without those params it still renders correctly, just without a
-specific time.
+Shown after a visitor books a call. It reads `event_start_time` /
+`event_end_time` off the URL to show the actual booked date/time and
+generate working "Add to Calendar" (Google + .ics) links. Without those
+params it falls back to a plain "check your email" message and hides the
+calendar buttons, rather than showing a broken/guessed time.
+
+**This requires a one-time setting in Calendly** (not available via the
+public API — checked; the event type's confirmation-page redirect isn't
+an exposed field, so this can't be scripted):
+
+1. In Calendly, open the event type `S.IO - Client Acquisition Team
+   Build` → **Confirmation Page** (under event settings).
+2. Enable **"Redirect to an external site after scheduled"**, and set the
+   URL to `https://scale.scalbl.io/thank-you.html`.
+3. Enable **"Add parameters to the confirmation page redirect"** — this
+   is what appends `event_start_time`, `event_end_time`,
+   `invitee_full_name`, `invitee_email`, etc. as query params.
+
+This redirect fires for the embedded widget on `index.html` too (Calendly
+navigates the top-level page, not just the iframe), so the flow stays
+booking → automatic redirect → `thank-you.html` with the real time filled
+in. Until this is turned on, visitors will see the fallback message
+instead of a specific time.
 
 ## Local preview
 

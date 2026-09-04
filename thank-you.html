@@ -60,23 +60,54 @@
     background:var(--soft);
     border:1px solid var(--line);
     border-radius:14px;
-    padding:34px 30px;
+    padding:36px 30px;
     margin:0 auto 32px;
     text-align:center;
   }
   .booked-label{
     font-weight:700;
-    font-size:.95rem;
+    font-size:.8rem;
+    letter-spacing:.06em;
+    text-transform:uppercase;
     color:var(--blue);
-    margin-bottom:10px;
+    margin-bottom:14px;
   }
-  .booked-time{
+  .booked-date{
     font-weight:900;
-    font-size:1.4rem;
-    line-height:1.35;
-    margin-bottom:26px;
+    font-size:clamp(1.4rem,4vw,1.9rem);
+    line-height:1.25;
+    letter-spacing:-0.01em;
+    text-wrap:balance;
+  }
+  .booked-time-row{
+    margin-top:8px;
+    font-weight:700;
+    font-size:1.05rem;
+    color:#5a6472;
+  }
+  .booked-time-row .tz{font-weight:500}
+  .fallback-note{
+    max-width:360px;
+    margin:0 auto;
+    font-size:1rem;
+    color:#5a6472;
+    line-height:1.5;
   }
 
+  .divider{
+    height:1px;
+    background:var(--line);
+    max-width:360px;
+    margin:26px auto;
+  }
+  .cal-label{
+    font-weight:700;
+    font-size:.8rem;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:#98a1ae;
+    margin-bottom:14px;
+  }
   .cal-options{
     display:flex;
     flex-direction:column;
@@ -155,12 +186,21 @@
 
 <div class="wrap">
   <div class="card">
-    <div class="booked-label">Your call has been booked for</div>
-    <div class="booked-time" id="bookedTime">the time you selected</div>
+    <div class="booked-label">Your call is booked for</div>
 
-    <div class="cal-options">
-      <a class="btn" id="googleCalBtn" href="#" target="_blank" rel="noopener">Add to Google Calendar</a>
-      <a class="btn-outline" id="icsBtn" href="#" download="client-acquisition-call.ics">Add to Apple / Outlook Calendar</a>
+    <div id="knownTime">
+      <div class="booked-date" id="bookedDate"></div>
+      <div class="booked-time-row"><span id="bookedTime"></span> <span class="tz" id="bookedTz"></span></div>
+    </div>
+    <p class="fallback-note" id="fallbackNote" hidden>We've sent the exact time to your email, along with a calendar invite.</p>
+
+    <div id="calSection">
+      <div class="divider"></div>
+      <div class="cal-label">Add to calendar</div>
+      <div class="cal-options">
+        <a class="btn" id="googleCalBtn" href="#" target="_blank" rel="noopener">Google Calendar</a>
+        <a class="btn-outline" id="icsBtn" href="#" download="client-acquisition-call.ics">Apple / Outlook (.ics)</a>
+      </div>
     </div>
   </div>
 
@@ -184,16 +224,23 @@
   var startDate = start ? new Date(start) : null;
   var endDate = end ? new Date(end) : (startDate ? new Date(startDate.getTime() + 30 * 60000) : null);
 
-  var timeEl = document.getElementById('bookedTime');
-  var fmt = new Intl.DateTimeFormat(undefined, {
-    weekday: 'long', month: 'long', day: 'numeric',
-    hour: 'numeric', minute: '2-digit', timeZoneName: 'short'
+  var dateFmt = new Intl.DateTimeFormat(undefined, {
+    weekday: 'long', month: 'long', day: 'numeric'
   });
+  var timeFmt = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
+  var tzFmt = new Intl.DateTimeFormat(undefined, { timeZoneName: 'short' });
 
-  if (startDate && !isNaN(startDate)) {
-    timeEl.textContent = fmt.format(startDate);
+  var haveTime = startDate && !isNaN(startDate) && endDate && !isNaN(endDate);
+
+  if (haveTime) {
+    document.getElementById('bookedDate').textContent = dateFmt.format(startDate);
+    document.getElementById('bookedTime').textContent = timeFmt.format(startDate);
+    var tzPart = tzFmt.formatToParts(startDate).find(function(p){ return p.type === 'timeZoneName'; });
+    document.getElementById('bookedTz').textContent = tzPart ? tzPart.value : '';
   } else {
-    timeEl.textContent = 'the time you selected — check your email for the confirmed details';
+    document.getElementById('knownTime').hidden = true;
+    document.getElementById('fallbackNote').hidden = false;
+    document.getElementById('calSection').hidden = true;
   }
 
   var title = 'Client Acquisition Team — Intro Call';
@@ -205,10 +252,10 @@
       pad(d.getUTCHours()) + pad(d.getUTCMinutes()) + pad(d.getUTCSeconds()) + 'Z';
   }
 
-  var googleBtn = document.getElementById('googleCalBtn');
-  var icsBtn = document.getElementById('icsBtn');
+  if (haveTime) {
+    var googleBtn = document.getElementById('googleCalBtn');
+    var icsBtn = document.getElementById('icsBtn');
 
-  if (startDate && !isNaN(startDate) && endDate && !isNaN(endDate)) {
     var gUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
       '&text=' + encodeURIComponent(title) +
       '&dates=' + toUTCString(startDate) + '/' + toUTCString(endDate) +
@@ -230,10 +277,6 @@
       'END:VCALENDAR'
     ].join('\r\n');
     icsBtn.href = 'data:text/calendar;charset=utf8,' + encodeURIComponent(ics);
-  } else {
-    // No time in the URL — hide the calendar actions rather than
-    // link to a broken/generic event.
-    document.querySelector('.cal-options').style.display = 'none';
   }
 </script>
 
