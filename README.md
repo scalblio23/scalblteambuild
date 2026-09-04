@@ -9,9 +9,19 @@ qualified) or a polite decline message (if not).
 ```
 .
 ├── index.html      # The landing/qualification page (entry point)
+├── thank-you.html  # Post-booking confirmation page (Calendly redirect target)
 ├── assets/         # Static assets (images, extra CSS/JS) as the site grows
 └── README.md
 ```
+
+### thank-you.html
+
+Shown after a visitor books a call. If linked to from Calendly with
+"Add params to confirmation page redirect" enabled, it reads
+`event_start_time` / `event_end_time` from the URL to show the booked
+time and generate working "Add to Calendar" (Google + .ics) links.
+Without those params it still renders correctly, just without a
+specific time.
 
 ## Local preview
 
