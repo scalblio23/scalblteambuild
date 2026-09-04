@@ -307,9 +307,11 @@
   }
 
   // Push the collected details into Calendly so the invitee never
-  // has to retype them. Phone is passed as the event's first custom
-  // question (a1) — in Calendly, add a "Phone number" custom question
-  // to this event type so it lands in that slot.
+  // has to retype them. On this event (S.IO - Client Acquisition Team
+  // Build), the "Phone Number" custom question is in slot 2 (a2) —
+  // slot 1 (a1) is "Please share anything that will help prepare for
+  // our meeting." If custom questions are ever reordered in Calendly,
+  // update a2 below to match the new position.
   function loadCalendly(name, email, phone){
     var target = document.getElementById('calendlyEmbed');
     target.innerHTML = '';
@@ -321,7 +323,7 @@
           prefill: {
             name: name,
             email: email,
-            customAnswers: { a1: phone }
+            customAnswers: { a2: phone }
           }
         });
       } else if(attemptsLeft > 0){
