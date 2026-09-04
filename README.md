@@ -67,6 +67,23 @@ booking → automatic redirect → `thank-you.html` with the real time filled
 in. Until this is turned on, visitors will see the fallback message
 instead of a specific time.
 
+### Meta Pixel
+
+Both pages carry the Meta Pixel base snippet (ID `981246888158490`),
+which fires a `PageView` automatically. Two funnel events fire on top of
+that:
+
+- **`Lead`** — fires in `submitContact()` in `index.html`, the moment a
+  qualified visitor submits their name/email/phone (before Calendly even
+  loads).
+- **`Schedule`** — fires in `thank-you.html`, but only inside the
+  `haveTime` branch — i.e. only when the page has real
+  `event_start_time`/`event_end_time` params from Calendly's redirect, so
+  it only counts actual confirmed bookings, not bare visits to the page.
+  This is why the Calendly confirmation-page redirect (above) matters for
+  ad reporting too, not just the calendar display — without it, booked
+  calls won't register as `Schedule` conversions in Meta.
+
 ## Local preview
 
 This is a single self-contained static HTML file — no build step required.

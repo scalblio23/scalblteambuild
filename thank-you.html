@@ -6,6 +6,25 @@
 <title>You're Booked — Client Acquisition Team</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&display=swap" rel="stylesheet">
+
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '981246888158490');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=981246888158490&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+
 <style>
   :root{
     --ink:#101418;
@@ -237,6 +256,9 @@
     document.getElementById('bookedTime').textContent = timeFmt.format(startDate);
     var tzPart = tzFmt.formatToParts(startDate).find(function(p){ return p.type === 'timeZoneName'; });
     document.getElementById('bookedTz').textContent = tzPart ? tzPart.value : '';
+    // Only fires with a real Calendly-supplied time, i.e. an actual
+    // confirmed booking — not on a bare/direct visit to this page.
+    if(typeof fbq === 'function') fbq('track', 'Schedule');
   } else {
     document.getElementById('knownTime').hidden = true;
     document.getElementById('fallbackNote').hidden = false;
