@@ -1,8 +1,9 @@
 # Scalbl Team Build
 
 Static landing page for the Client Acquisition Team offer — a 3-question
-qualification flow that routes visitors to a Calendly booking widget (if
-qualified) or a polite decline message (if not).
+qualification flow, then a name/email/phone step, that routes visitors to
+a prefilled Calendly booking widget (if qualified) or a polite decline
+message (if not).
 
 ## Structure
 
@@ -13,6 +14,21 @@ qualified) or a polite decline message (if not).
 ├── assets/         # Static assets (images, extra CSS/JS) as the site grows
 └── README.md
 ```
+
+### Calendly prefill setup (one-time)
+
+The last step of `index.html` collects name, email, and phone, then loads
+the Calendly widget with `Calendly.initInlineWidget(...)`, prefilling
+name and email directly and passing phone as the event's **first custom
+question** (`customAnswers.a1`). For the phone number to actually land in
+that field on Calendly's side:
+
+1. In Calendly, open the event type (`s-io-client-acquisition-team-build`)
+   → **Invitee Questions**.
+2. Make sure a free-text question (e.g. "Phone number") exists as
+   **question 1** in that list — that's what `a1` maps to.
+3. If it's in a different position, update the key in `loadCalendly()` in
+   `index.html` (`a1` → `a2`, etc.) to match.
 
 ### thank-you.html
 
