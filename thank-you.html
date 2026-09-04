@@ -15,6 +15,7 @@
     --line:#e3e7ee;
     --soft:#f5f7fb;
     --green:#1a9e5c;
+    color-scheme:light;
   }
   *{margin:0;padding:0;box-sizing:border-box}
   body{
@@ -25,7 +26,10 @@
   }
   .wrap{max-width:760px;margin:0 auto;padding:0 20px}
 
-  header{padding:112px 0 40px;text-align:center}
+  header{padding-top:140px;padding-bottom:40px;text-align:center}
+  @media (min-width:640px){
+    header{padding-top:180px}
+  }
 
   .check{
     width:64px;height:64px;
