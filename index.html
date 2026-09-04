@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book Your Call — Client Acquisition Team</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#101418;
+    --paper:#ffffff;
+    --blue:#1f5eff;
+    --blue-dark:#1244c2;
+    --line:#e3e7ee;
+    --soft:#f5f7fb;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:'Archivo',system-ui,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px}
+
+  header{padding:56px 0 40px;text-align:center}
+  h1{
+    font-weight:900;
+    font-size:clamp(1.6rem,4.5vw,2.6rem);
+    line-height:1.15;
+    letter-spacing:-0.02em;
+  }
+  .sub{
+    margin-top:18px;
+    font-size:1.05rem;
+    color:#5a6472;
+    font-weight:500;
+  }
+
+  .card{
+    background:var(--soft);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:34px 30px;
+    margin:0 auto 60px;
+  }
+  .step-label{
+    font-weight:700;
+    font-size:.95rem;
+    color:var(--blue);
+    margin-bottom:10px;
+  }
+  .question{
+    font-weight:700;
+    font-size:1.25rem;
+    line-height:1.35;
+    margin-bottom:8px;
+  }
+  .hint{color:#5a6472;font-size:.95rem;margin-bottom:22px}
+
+  .options{display:flex;flex-direction:column;gap:12px}
+  button.opt, select, .btn{
+    font-family:inherit;
+    font-size:1.05rem;
+    font-weight:700;
+  }
+  button.opt{
+    background:#fff;
+    border:2px solid var(--line);
+    border-radius:10px;
+    padding:16px 18px;
+    text-align:left;
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+  }
+  button.opt:hover{border-color:var(--blue)}
+  button.opt:focus-visible, select:focus-visible, .btn:focus-visible{
+    outline:3px solid var(--blue);
+    outline-offset:2px;
+  }
+  select{
+    width:100%;
+    padding:16px 14px;
+    border:2px solid var(--line);
+    border-radius:10px;
+    background:#fff;
+    cursor:pointer;
+    appearance:none;
+  }
+  .btn{
+    display:inline-block;
+    width:100%;
+    background:var(--blue);
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    padding:17px 20px;
+    cursor:pointer;
+    margin-top:20px;
+    transition:background .15s;
+  }
+  .btn:hover{background:var(--blue-dark)}
+  .btn[disabled]{opacity:.4;cursor:not-allowed}
+
+  .progress{
+    height:6px;
+    background:var(--line);
+    border-radius:3px;
+    margin-bottom:28px;
+    overflow:hidden;
+  }
+  .progress span{
+    display:block;height:100%;
+    background:var(--blue);
+    width:0%;
+    transition:width .3s;
+  }
+
+  .step{display:none}
+  .step.active{display:block}
+
+  .fail{
+    text-align:center;
+    padding:10px 0;
+  }
+  .fail h2{font-size:1.4rem;font-weight:900;margin-bottom:12px}
+  .fail p{color:#5a6472;font-size:1rem;line-height:1.5}
+
+  .booking{
+    text-align:center;
+  }
+  .booking h2{
+    font-size:clamp(1.3rem,3.5vw,1.8rem);
+    font-weight:900;
+    margin-bottom:6px;
+  }
+  .booking p{color:#5a6472;margin-bottom:24px}
+  .cal-embed{
+    background:#fff;
+    border:2px dashed var(--line);
+    border-radius:12px;
+    min-height:480px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#98a1ae;
+    font-weight:500;
+  }
+
+  footer{
+    text-align:center;
+    padding:30px 0 40px;
+    color:#98a1ae;
+    font-size:.8rem;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important}
+  }
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <h1>Give Us 7 Days And We'll Install Our Client Acquisition Team To Generate You A Minimum Of 50&#8211;100 Booked Calls A Month</h1>
+  <p class="sub">Answer 3 quick questions to see if you qualify.</p>
+</header>
+
+<div class="wrap">
+  <div class="card" id="card">
+    <div class="progress"><span id="bar"></span></div>
+
+    <!-- Q1 -->
+    <div class="step active" id="step1">
+      <div class="step-label">Question 1 of 3</div>
+      <div class="question">Do you have the capacity to take on an extra 50&#8211;100 calls per month?</div>
+      <div class="hint">Usually requires a minimum of 5 staff.</div>
+      <div class="options">
+        <button class="opt" onclick="answer(1,true)">Yes, we have the capacity</button>
+        <button class="opt" onclick="answer(1,false)">No, not right now</button>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="step" id="step2">
+      <div class="step-label">Question 2 of 3</div>
+      <div class="question">What industry is your business in?</div>
+      <div class="hint">Select the closest match.</div>
+      <select id="industry" onchange="document.getElementById('q2btn').disabled = !this.value">
+        <option value="">Select your industry…</option>
+        <option>Finance / Mortgage Broking</option>
+        <option>Solar &amp; Energy</option>
+        <option>Trades &amp; Construction</option>
+        <option>Home Services</option>
+        <option>Health &amp; Medical</option>
+        <option>Real Estate</option>
+        <option>Professional Services</option>
+        <option>Other</option>
+      </select>
+      <button class="btn" id="q2btn" disabled onclick="answer(2,true)">Continue</button>
+    </div>
+
+    <!-- Q3 -->
+    <div class="step" id="step3">
+      <div class="step-label">Question 3 of 3</div>
+      <div class="question">Can you comfortably spend $100 per day on Meta ads?</div>
+      <div class="hint"></div>
+      <div class="options">
+        <button class="opt" onclick="answer(3,true)">Yes, comfortably</button>
+        <button class="opt" onclick="answer(3,false)">No, that's a stretch</button>
+      </div>
+    </div>
+
+    <!-- Qualified -->
+    <div class="step" id="qualified">
+      <div class="booking">
+        <h2>Great — you qualify.</h2>
+        <p>Book in a time below to start:</p>
+        <!-- Calendly inline widget begin -->
+        <div class="calendly-inline-widget" data-url="https://calendly.com/fortent/s-io-client-acquisition-team-build" style="min-width:320px;height:700px;"></div>
+        <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+        <!-- Calendly inline widget end -->
+      </div>
+    </div>
+
+    <!-- Not qualified -->
+    <div class="step" id="notqualified">
+      <div class="fail">
+        <h2>Thanks for your interest</h2>
+        <p>Based on your answers, we're not the right fit just yet. When your capacity or budget changes, come back and we'd love to talk.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="wrap">&copy; 2026 Scalbl. All rights reserved.</footer>
+
+<script>
+  var bar = document.getElementById('bar');
+  function show(id, pct){
+    document.querySelectorAll('.step').forEach(function(s){ s.classList.remove('active'); });
+    document.getElementById(id).classList.add('active');
+    bar.style.width = pct + '%';
+    document.getElementById('card').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  function answer(step, pass){
+    if(!pass){ show('notqualified', 100); return; }
+    if(step === 1){ show('step2', 33); }
+    else if(step === 2){ show('step3', 66); }
+    else { show('qualified', 100); }
+  }
+  bar.style.width = '5%';
+</script>
+
+</body>
+</html>
