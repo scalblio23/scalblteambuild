@@ -6,6 +6,7 @@
 <title>Book Your Call — Client Acquisition Team</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&display=swap" rel="stylesheet">
+<script src="https://assets.calendly.com/assets/external/widget.js" defer></script>
 <style>
   :root{
     --ink:#101418;
@@ -65,7 +66,7 @@
   .hint{color:#5a6472;font-size:.95rem;margin-bottom:22px}
 
   .options{display:flex;flex-direction:column;gap:12px}
-  button.opt, select, .btn{
+  button.opt, select, .btn, .field{
     font-family:inherit;
     font-size:1.05rem;
     font-weight:700;
@@ -83,7 +84,7 @@
     transition:border-color .15s, background .15s;
   }
   button.opt:hover{border-color:var(--blue)}
-  button.opt:focus-visible, select:focus-visible, .btn:focus-visible{
+  button.opt:focus-visible, select:focus-visible, .btn:focus-visible, .field:focus-visible{
     outline:3px solid var(--blue);
     outline-offset:2px;
   }
@@ -96,6 +97,17 @@
     cursor:pointer;
     appearance:none;
   }
+  .fields{display:flex;flex-direction:column;gap:12px}
+  .field{
+    width:100%;
+    font-weight:500;
+    padding:16px 14px;
+    border:2px solid var(--line);
+    border-radius:10px;
+    background:#fff;
+  }
+  .field::placeholder{color:#98a1ae;font-weight:500}
+  .field:focus{border-color:var(--blue)}
   .btn{
     display:inline-block;
     width:100%;
@@ -172,7 +184,7 @@
 
 <header class="hero wrap" style="padding-top:140px;padding-bottom:40px">
   <h1>Give Us 7 Days And We'll Install Our Client Acquisition Team To Generate You A Minimum Of 50&#8211;100 Booked Calls A Month</h1>
-  <p class="sub">Answer 3 quick questions to see if you qualify.</p>
+  <p class="sub">Answer a few quick questions to see if you qualify.</p>
 </header>
 
 <div class="wrap">
@@ -194,8 +206,8 @@
     <div class="step" id="step2">
       <div class="step-label">Question 2 of 3</div>
       <div class="question">What industry is your business in?</div>
-      <div class="hint">Select the closest match.</div>
-      <select id="industry" onchange="document.getElementById('q2btn').disabled = !this.value">
+      <div class="hint">Select the closest match — we'll move on automatically.</div>
+      <select id="industry" onchange="selectIndustry(this.value)">
         <option value="">Select your industry…</option>
         <option>Finance / Mortgage Broking</option>
         <option>Solar &amp; Energy</option>
@@ -206,7 +218,6 @@
         <option>Professional Services</option>
         <option>Other</option>
       </select>
-      <button class="btn" id="q2btn" disabled onclick="answer(2,true)">Continue</button>
     </div>
 
     <!-- Q3 -->
@@ -220,15 +231,26 @@
       </div>
     </div>
 
+    <!-- Contact details -->
+    <div class="step" id="step4">
+      <div class="step-label">Last step</div>
+      <div class="question">Where should we send your confirmation?</div>
+      <div class="hint">We'll call you beforehand to confirm details.</div>
+      <div class="fields">
+        <input class="field" type="text" id="fullName" placeholder="Full name" autocomplete="name" oninput="validateContact()">
+        <input class="field" type="email" id="email" placeholder="Email address" autocomplete="email" oninput="validateContact()">
+        <input class="field" type="tel" id="phone" placeholder="Phone number" autocomplete="tel" oninput="validateContact()">
+      </div>
+      <button class="btn" id="q4btn" disabled onclick="submitContact()">Continue to booking</button>
+    </div>
+
     <!-- Qualified -->
     <div class="step" id="qualified">
       <div class="booking">
         <h2>Great — you qualify.</h2>
         <p>Book in a time below to start:</p>
-        <!-- Calendly inline widget begin -->
-        <div class="calendly-inline-widget" data-url="https://calendly.com/fortent/s-io-client-acquisition-team-build" style="min-width:320px;height:700px;"></div>
-        <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
-        <!-- Calendly inline widget end -->
+        <!-- Calendly inline widget: initialized via JS with prefill once step4 is submitted -->
+        <div id="calendlyEmbed" style="min-width:320px;height:700px;"></div>
       </div>
     </div>
 
@@ -253,12 +275,61 @@
     bar.style.width = pct + '%';
     document.getElementById('card').scrollIntoView({behavior:'smooth', block:'start'});
   }
+
+  // Q1 and Q3: yes/no buttons
   function answer(step, pass){
     if(!pass){ show('notqualified', 100); return; }
-    if(step === 1){ show('step2', 33); }
-    else if(step === 2){ show('step3', 66); }
-    else { show('qualified', 100); }
+    if(step === 1){ show('step2', 25); }
+    else if(step === 3){ show('step4', 75); }
   }
+
+  // Q2: auto-advance the moment an industry is picked, no extra click
+  function selectIndustry(value){
+    if(!value) return;
+    show('step3', 50);
+  }
+
+  // Step 4: name / email / phone, enable "Continue" once all are valid
+  function validateContact(){
+    var name = document.getElementById('fullName').value.trim();
+    var email = document.getElementById('email').value.trim();
+    var phone = document.getElementById('phone').value.trim();
+    var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    document.getElementById('q4btn').disabled = !(name && emailOk && phone);
+  }
+
+  function submitContact(){
+    var name = document.getElementById('fullName').value.trim();
+    var email = document.getElementById('email').value.trim();
+    var phone = document.getElementById('phone').value.trim();
+    show('qualified', 100);
+    loadCalendly(name, email, phone);
+  }
+
+  // Push the collected details into Calendly so the invitee never
+  // has to retype them. Phone is passed as the event's first custom
+  // question (a1) — in Calendly, add a "Phone number" custom question
+  // to this event type so it lands in that slot.
+  function loadCalendly(name, email, phone){
+    var target = document.getElementById('calendlyEmbed');
+    target.innerHTML = '';
+    (function init(attemptsLeft){
+      if(window.Calendly && window.Calendly.initInlineWidget){
+        window.Calendly.initInlineWidget({
+          url: 'https://calendly.com/fortent/s-io-client-acquisition-team-build',
+          parentElement: target,
+          prefill: {
+            name: name,
+            email: email,
+            customAnswers: { a1: phone }
+          }
+        });
+      } else if(attemptsLeft > 0){
+        setTimeout(function(){ init(attemptsLeft - 1); }, 150);
+      }
+    })(40); // ~6s of retries in case widget.js is still loading
+  }
+
   bar.style.width = '5%';
 </script>
 
