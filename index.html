@@ -303,8 +303,10 @@ src="https://www.facebook.com/tr?id=981246888158490&ev=PageView&noscript=1"
   }
 
   // Q2: auto-advance the moment an industry is picked, no extra click
+  var selectedIndustry = '';
   function selectIndustry(value){
     if(!value) return;
+    selectedIndustry = value;
     show('step3', 50);
   }
 
@@ -317,10 +319,32 @@ src="https://www.facebook.com/tr?id=981246888158490&ev=PageView&noscript=1"
     document.getElementById('q4btn').disabled = !(name && emailOk && phone);
   }
 
+  // Fires the moment a qualified lead submits their contact details.
+  // Fire-and-forget: never blocks or breaks the booking flow if the
+  // webhook is slow or unreachable.
+  var WEBHOOK_URL = 'https://hooks.zapier.com/hooks/catch/16453711/4hey9vm/';
+  function sendWebhook(data){
+    try{
+      fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).catch(function(){});
+    }catch(e){}
+  }
+
   function submitContact(){
     var name = document.getElementById('fullName').value.trim();
     var email = document.getElementById('email').value.trim();
     var phone = document.getElementById('phone').value.trim();
+    sendWebhook({
+      name: name,
+      email: email,
+      phone: phone,
+      industry: selectedIndustry,
+      submitted_at: new Date().toISOString(),
+      page: window.location.href
+    });
     if(typeof fbq === 'function') fbq('track', 'Lead');
     show('qualified', 100);
     loadCalendly(name, email, phone);
