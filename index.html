@@ -43,6 +43,10 @@ src="https://www.facebook.com/tr?id=981246888158490&ev=PageView&noscript=1"
     background:var(--paper);
     color:var(--ink);
     -webkit-font-smoothing:antialiased;
+    /* The super headline pill is allowed to bleed past the 760px
+       content column to stay on one line - this keeps that overflow
+       from ever forcing a page-wide horizontal scrollbar. */
+    overflow-x:hidden;
   }
   .wrap{max-width:760px;margin:0 auto;padding:0 20px}
 
@@ -58,8 +62,9 @@ src="https://www.facebook.com/tr?id=981246888158490&ev=PageView&noscript=1"
   }
   .super{
     display:inline-block;
+    white-space:nowrap;
     font-weight:700;
-    font-size:1.43rem;
+    font-size:clamp(.7rem,3.4vw,1.43rem);
     letter-spacing:.06em;
     text-transform:uppercase;
     color:var(--blue);
