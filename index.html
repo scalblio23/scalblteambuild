@@ -322,13 +322,22 @@ src="https://www.facebook.com/tr?id=981246888158490&ev=PageView&noscript=1"
   // Fires the moment a qualified lead submits their contact details.
   // Fire-and-forget: never blocks or breaks the booking flow if the
   // webhook is slow or unreachable.
+  //
+  // Deliberately no explicit Content-Type header: setting
+  // 'application/json' turns this into a cross-origin "non-simple"
+  // request, which makes the browser send a CORS preflight (OPTIONS)
+  // first - and Zapier's catch hook doesn't answer that the way
+  // browsers expect, so the real POST never goes out. Leaving the
+  // header off makes fetch default to text/plain, a CORS-safelisted
+  // type that skips the preflight entirely. Zapier still parses the
+  // body as JSON regardless of the declared content type.
   var WEBHOOK_URL = 'https://hooks.zapier.com/hooks/catch/16453711/4hey9vm/';
   function sendWebhook(data){
     try{
       fetch(WEBHOOK_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        keepalive: true
       }).catch(function(){});
     }catch(e){}
   }
