@@ -219,8 +219,13 @@ src="https://www.facebook.com/tr?id=981246888158490&ev=PageView&noscript=1"
     border-radius:14px;
     padding:28px;
     margin-bottom:24px;
+    transition:opacity .6s ease, transform .6s ease;
   }
   .case-study:last-child{margin-bottom:0}
+  /* Added by JS before the reveal observer runs, so a page with JS
+     disabled/blocked just shows the case studies normally. */
+  .case-study.fade-init{opacity:0;transform:translateY(24px)}
+  .case-study.fade-in{opacity:1;transform:translateY(0)}
   .case-title{
     font-weight:900;
     font-size:1.15rem;
@@ -272,7 +277,7 @@ src="https://www.facebook.com/tr?id=981246888158490&ev=PageView&noscript=1"
 <header class="hero wrap" style="padding-top:140px;padding-bottom:40px">
   <p class="super">For businesses with a team looking to scale</p>
   <h1>Get 50&#8211;100 Appointments<br>Booked Into Your Calendar<br>Every 30 Days</h1>
-  <p class="sub">With a fully done for you client acquisition team. We run your ads. Call your leads. Automate with AI.</p>
+  <p class="sub">With a fully done for you client acquisition team. We run your ads, Call your leads and Automate with AI.</p>
 </header>
 
 <div class="wrap">
@@ -515,6 +520,24 @@ src="https://www.facebook.com/tr?id=981246888158490&ev=PageView&noscript=1"
   }
 
   bar.style.width = '5%';
+
+  // Fade each case study in as it scrolls into view. If IntersectionObserver
+  // isn't available, skip straight to visible rather than risk a stuck
+  // invisible section.
+  if('IntersectionObserver' in window){
+    var caseStudies = document.querySelectorAll('.case-study');
+    caseStudies.forEach(function(el){ el.classList.add('fade-init'); });
+    var revealObserver = new IntersectionObserver(function(entries, obs){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.remove('fade-init');
+          entry.target.classList.add('fade-in');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    caseStudies.forEach(function(el){ revealObserver.observe(el); });
+  }
 </script>
 
 </body>
