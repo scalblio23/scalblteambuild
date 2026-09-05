@@ -296,10 +296,17 @@ src="https://www.facebook.com/tr?id=981246888158490&ev=PageView&noscript=1"
   }
 
   // Q1 and Q3: yes/no buttons
+  var capacityAnswer = '';
+  var adBudgetAnswer = '';
   function answer(step, pass){
     if(!pass){ show('notqualified', 100); return; }
-    if(step === 1){ show('step2', 25); }
-    else if(step === 3){ show('step4', 75); }
+    if(step === 1){
+      capacityAnswer = 'Yes, we have the capacity';
+      show('step2', 25);
+    } else if(step === 3){
+      adBudgetAnswer = 'Yes, comfortably';
+      show('step4', 75);
+    }
   }
 
   // Q2: auto-advance the moment an industry is picked, no extra click
@@ -351,6 +358,8 @@ src="https://www.facebook.com/tr?id=981246888158490&ev=PageView&noscript=1"
       email: email,
       phone: phone,
       industry: selectedIndustry,
+      capacity_for_50_100_calls: capacityAnswer,
+      can_spend_100_per_day_ads: adBudgetAnswer,
       submitted_at: new Date().toISOString(),
       page: window.location.href
     });
