@@ -84,16 +84,10 @@ src="https://www.facebook.com/tr?id=981246888158490&ev=PageView&noscript=1"
     padding:34px 30px;
     margin:0 auto 60px;
   }
-  .step-label{
-    font-weight:700;
-    font-size:.95rem;
-    color:var(--blue);
-    margin-bottom:10px;
-  }
   .question{
     font-weight:700;
-    font-size:1.25rem;
-    line-height:1.35;
+    font-size:clamp(1.35rem,3vw,1.6rem);
+    line-height:1.4;
     margin-bottom:8px;
   }
   .hint{color:#5a6472;font-size:.95rem;margin-bottom:22px}
@@ -287,8 +281,7 @@ src="https://www.facebook.com/tr?id=981246888158490&ev=PageView&noscript=1"
 
     <!-- Q1 -->
     <div class="step active" id="step1">
-      <div class="step-label">Question 1 of 3</div>
-      <div class="question">Do you have the capacity to take on an extra 50&#8211;100 calls per month?</div>
+      <div class="question">👋 Do you have the capacity to take on an extra 50&#8211;100 calls per month?</div>
       <div class="hint">Usually requires a minimum of 5 staff.</div>
       <div class="options">
         <button class="opt" onclick="answer(1,true)">Yes, we have the capacity</button>
@@ -298,8 +291,7 @@ src="https://www.facebook.com/tr?id=981246888158490&ev=PageView&noscript=1"
 
     <!-- Q2 -->
     <div class="step" id="step2">
-      <div class="step-label">Question 2 of 3</div>
-      <div class="question">What industry is your business in?</div>
+      <div class="question">🏢 What industry is your business in?</div>
       <div class="hint">Select the closest match — we'll move on automatically.</div>
       <select id="industry" onchange="selectIndustry(this.value)">
         <option value="">Select your industry…</option>
@@ -316,8 +308,7 @@ src="https://www.facebook.com/tr?id=981246888158490&ev=PageView&noscript=1"
 
     <!-- Q3 -->
     <div class="step" id="step3">
-      <div class="step-label">Question 3 of 3</div>
-      <div class="question">Can you comfortably spend $100 per day on Meta ads?</div>
+      <div class="question">💰 Can you comfortably spend $100 per day on Meta ads?</div>
       <div class="hint"></div>
       <div class="options">
         <button class="opt" onclick="answer(3,true)">Yes, comfortably</button>
@@ -327,8 +318,7 @@ src="https://www.facebook.com/tr?id=981246888158490&ev=PageView&noscript=1"
 
     <!-- Contact details -->
     <div class="step" id="step4">
-      <div class="step-label">Last step</div>
-      <div class="question">Where should we send your confirmation?</div>
+      <div class="question">📞 Where should we send your confirmation?</div>
       <div class="hint">We'll call you beforehand to confirm details.</div>
       <div class="fields">
         <input class="field" type="text" id="fullName" placeholder="Full name" autocomplete="name" oninput="validateContact()">
