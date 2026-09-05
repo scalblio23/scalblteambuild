@@ -196,6 +196,66 @@ src="https://www.facebook.com/tr?id=981246888158490&ev=PageView&noscript=1"
     font-weight:500;
   }
 
+  .results{padding:24px 0 64px}
+  .results-super{
+    font-weight:700;
+    font-size:.8rem;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--blue);
+    text-align:center;
+    margin-bottom:10px;
+  }
+  .results h2{
+    font-weight:900;
+    font-size:clamp(1.4rem,3.5vw,1.9rem);
+    line-height:1.25;
+    letter-spacing:-0.01em;
+    text-align:center;
+    text-wrap:balance;
+    margin-bottom:44px;
+  }
+  .case-study{
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:28px;
+    margin-bottom:24px;
+  }
+  .case-study:last-child{margin-bottom:0}
+  .case-title{
+    font-weight:900;
+    font-size:1.15rem;
+    line-height:1.35;
+    margin-bottom:6px;
+    text-wrap:balance;
+  }
+  .case-industry{
+    color:var(--blue);
+    font-weight:700;
+    font-size:.85rem;
+    margin-bottom:22px;
+  }
+  .proof-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:20px;
+  }
+  @media (min-width:640px){
+    .proof-grid.two-up{grid-template-columns:1fr 1fr}
+  }
+  .proof-label{
+    font-weight:700;
+    font-size:.85rem;
+    color:#5a6472;
+    margin-bottom:10px;
+  }
+  .proof-item img{
+    width:100%;
+    display:block;
+    border-radius:10px;
+    border:1px solid var(--line);
+  }
+
   footer{
     text-align:center;
     padding:30px 0 40px;
@@ -292,6 +352,48 @@ src="https://www.facebook.com/tr?id=981246888158490&ev=PageView&noscript=1"
     </div>
 
   </div>
+
+  <section class="results">
+    <p class="results-super">Proof, not promises</p>
+    <h2>What Happens When We Take Over Your Client Acquisition</h2>
+
+    <div class="case-study">
+      <div class="case-title">Case Study 1 — Wilco Relining Adds $50k&#8211;$150k A Month</div>
+      <div class="case-industry">Home Services / Trade</div>
+      <div class="proof-grid two-up">
+        <div class="proof-item">
+          <div class="proof-label">Their Meta ads account</div>
+          <img src="assets/case-studies/wilco-meta-ads.png" alt="Wilco Relining's Meta Ads Manager showing leads and spend across campaigns" loading="lazy">
+        </div>
+        <div class="proof-item">
+          <div class="proof-label">Call stats on our dialler account</div>
+          <img src="assets/case-studies/wilco-dialler-stats.png" alt="Dialler dashboard showing calls made, bookings, and booking rate for Wilco Relining" loading="lazy">
+        </div>
+      </div>
+    </div>
+
+    <div class="case-study">
+      <div class="case-title">Case Study 2 — Hurricane Digital Scales To $300k+ Ad Spend And 4000+ Leads</div>
+      <div class="case-industry">Agency</div>
+      <div class="proof-grid">
+        <div class="proof-item">
+          <div class="proof-label">Their Meta ads account</div>
+          <img src="assets/case-studies/hurricane-digital-meta-ads.png" alt="Hurricane Digital's Meta Ads Manager showing campaigns with over 4,000 leads generated" loading="lazy">
+        </div>
+      </div>
+    </div>
+
+    <div class="case-study">
+      <div class="case-title">Case Study 3 — Strategic Investment Adds $100k In New Deals A Month</div>
+      <div class="case-industry">Property</div>
+      <div class="proof-grid">
+        <div class="proof-item">
+          <div class="proof-label">Screenshot of deals from WhatsApp</div>
+          <img src="assets/case-studies/strategic-investment-whatsapp.png" alt="WhatsApp messages showing new booked leads for Strategic Investment Network" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
 
 <footer class="wrap">&copy; 2026 Scalbl. All rights reserved.</footer>
